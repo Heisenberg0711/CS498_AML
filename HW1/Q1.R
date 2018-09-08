@@ -2,8 +2,11 @@
 library(caret)
 Diabete_data <- read.csv(file = "pima-indians-diabetes.csv", header = TRUE, sep = ",")
 
-# itr = 1
-# #while (itr < 10) {
+
+
+#Split the data 10 times 
+itr = 1
+while (itr < 10) {
 
 train_Index <- createDataPartition(Diabete_data$X1, p = 0.2, list = FALSE, times = 1)
 
@@ -23,21 +26,34 @@ X1_Stdev = integer(N)
 X0_Means = integer(N) 
 X0_Stdev = integer(N)
 
-
+#Get the mean and std for Gaussian distribution
   for (property in 1:N) {
-       curr_prop = Diabete_data[[1]][train_Index]
-       positive_attr <- curr_prop[location_Y1]
+       curr_prop = Diabete_data[[property]][train_Index]
+       
        negative_attr <- curr_prop[location_Y0]
+       positive_attr <- curr_prop[location_Y1]
        
-       print(positive_attr)
-       print(negative_attr)
-       # print(train_Index)
-       # print(curr_prop)
-       X1_Means[1] = mean(curr_prop)
-       X1_Stdev[1] = sd(curr_prop)
+       X0_Means[property] = mean(negative_attr)
+       X0_Stdev[property] = sd(negative_attr)
        
-       
+       X1_Means[property] = mean(positive_attr)
+       X1_Stdev[property] = sd(positive_attr)
   } 
+  
+
+#Begin the validation and calculate the error rate
+result = integer(length(diabete_testY))
+prob = double(length = length(diabete_testY))
+print(prob)
+  for (entry in 1:length(diabete_testY)) {
+    prob0 = double(length = N)
+    prob1 = double(length = N)
+      for (property in 1:N) {
+        curr_prop = (Diabete_data[[property]][-train_Index])[entry]
+        prob1[property] <- dnorm(curr_prop)
+        
+      }
+  }
 
 
 
@@ -45,7 +61,9 @@ X0_Stdev = integer(N)
 
 
 
-# itr <- itr + 1
-# }
+
+
+ itr <- itr + 1
+ }
 
 

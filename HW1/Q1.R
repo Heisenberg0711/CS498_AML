@@ -3,7 +3,6 @@ library(caret)
 Diabete_data <- read.csv(file = "pima-indians-diabetes.csv", header = TRUE, sep = ",")
 
 
-
 #Split the data 10 times 
 itr = 1
 while (itr < 10) {
@@ -43,27 +42,32 @@ X0_Stdev = integer(N)
 
 #Begin the validation and calculate the error rate
 result = integer(length(diabete_testY))
-prob = double(length = length(diabete_testY))
-print(prob)
+
   for (entry in 1:length(diabete_testY)) {
     prob0 = double(length = N)
     prob1 = double(length = N)
       for (property in 1:N) {
         curr_prop = (Diabete_data[[property]][-train_Index])[entry]
-        prob1[property] <- dnorm(curr_prop)
-        
+        prob0[property] <- dnorm(curr_prop, mean = X0_Means[property], sd = X0_Stdev[property], log = TRUE)
+        prob1[property] <- dnorm(curr_prop, mean = X1_Means[property], sd = X1_Stdev[property], log = TRUE)
+      }
+      if (sum(prob0) + log(p0y) >= sum(prob1) + log(p1y)) {
+        result[entry] <- 0 
+      } else {
+        result[entry] <- 1
       }
   }
 
+    valid = 0
+      for (i in 1: length(diabete_testY)) {
+        if (diabete_testY[i] == result[i]) {
+          valid <- valid + 1
+        }
+      }
+    err_rate = valid / length(diabete_testY)
+    print(err_rate)
 
-
-
-
-
-
-
-
- itr <- itr + 1
- }
+  itr <- itr + 1
+}
 
 

@@ -2,10 +2,10 @@
 library(caret)
 Diabete_data <- read.csv(file = "pima-indians-diabetes.csv", header = TRUE, sep = ",")
 
-
-#Split the data 10 times 
+#Split the data 10 times
+accuracy = double(length = 10)
 itr = 1
-while (itr < 10) {
+while (itr < 11) {
 
 train_Index <- createDataPartition(Diabete_data$X1, p = 0.2, list = FALSE, times = 1)
 
@@ -64,8 +64,7 @@ result = integer(length(diabete_testY))
           valid <- valid + 1
         }
       }
-    err_rate = valid / length(diabete_testY)
-    print(err_rate)
+    accuracy[itr] = valid / length(diabete_testY)
 
   itr <- itr + 1
 }

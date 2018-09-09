@@ -160,4 +160,3 @@ result = integer(length(diabete_testY))
 
 avg_accuracy2 = mean(accuracy2)
 
-

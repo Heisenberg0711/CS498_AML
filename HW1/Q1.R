@@ -1,4 +1,4 @@
-#Read in the data
+#Part 1A
 library(caret)
 Diabete_data <- read.csv(file = "pima-indians-diabetes.csv", header = TRUE, sep = ",")
 
@@ -65,8 +65,32 @@ result = integer(length(diabete_testY))
         }
       }
     accuracy[itr] = valid / length(diabete_testY)
-
   itr <- itr + 1
 }
+
+#Get the average accuracy by averaging the vector
+avg_accuracy <- mean(accuracy)
+
+
+
+
+
+#Part 1B
+library(caret)
+Diabete_data <- read.csv(file = "pima-indians-diabetes.csv", header = TRUE, sep = ",")
+num_attr = length(Diabete_data)
+
+#Mark the zeros in attribute 3,4,6,8 as NA
+for (attr in 1:num_attr) {
+  if (attr == 3 | attr == 4 | attr == 6 | attr == 8) {
+     curr_attr = Diabete_data[[attr]]
+     for (entry in 1:length(curr_attr)) {
+        if (curr_attr[entry] == 0) {
+          Diabete_data[[attr]][entry] <- NA
+        }
+     }  
+  }
+}
+
 
 

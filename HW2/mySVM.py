@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import math as ma
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.model_selection import ShuffleSplit
@@ -45,11 +46,22 @@ N_steps = 300
 def gradient(a, b, X, Y,lam):
     if Y*(a.T*X + b) < 1:
         return np.array([lam*a - Y*X, -Y])
-    else
+    else:
         return np.array([lam*a, 0])
 
 
 msk = np.array(range(0,len(train_labels)))
 np.random.shuffle(msk)
 
-batch = train_features[msk[0:10],:]
+held_features = np.array(train_features[msk[-50:]])
+held_labels = np.array(train_labels[msk[-50:]])
+train_bound = len(msk)-50
+batch_size = ma.ceil(train_bound / N_steps)
+
+for step in range(N_steps):
+    X = train_features[msk[step * batch_size: (step + 1) * batch_size]]
+    print((step+1) * batch_size)
+    print(X.shape)
+
+print("the length of the mask is")
+print(len(msk))

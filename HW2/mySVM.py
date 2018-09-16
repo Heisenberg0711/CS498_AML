@@ -13,7 +13,7 @@ def label_income(row):
     if row[14] == " >50K":
         return 1
 
-
+#Function to add quotation marks to example column
 def parse(row):
     return "'" + row + "'"
 
@@ -32,16 +32,6 @@ for col in range(features.shape[1]):
     a = features[:,col]
     features[:,col] = (a - a.mean()) / a.std()
 
-#Get the test and train data sets
-train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size = 0.1)
-
-#Define constants for calculating stepsize = a / (epoch + b)
-m = 1
-n = 50
-
-#Number of steps per season and regularization constants
-N_steps = 300
-lambda_vals = np.array([1e-3,0.002, 0.003, 1e-2,1e-1,1])
 
 #This function calculates gradient and updates the values of a and b
 #returns a tuple of a vector and b value
@@ -67,7 +57,7 @@ def get_accu(a, b, val_features, val_labels, size):
 def SVM(train_features, train_labels, lam):
     a = np.random.random([6, 1])
     b = np.random.random()
-    np.random.seed(seed = 711)
+
     #Empty accuracy array and magnitude array
     accu_array = []
     mag_array = []
@@ -97,8 +87,15 @@ def SVM(train_features, train_labels, lam):
                 mag_array.append(a.T.dot(a)[0,0])
     return (a, b, accu_array, mag_array)
 
+#Define constants for calculating stepsize = a / (epoch + b)
+m = 1
+n = 50
+#Number of steps per season and regularization constants
+N_steps = 300
+lambda_vals = np.array([1e-3,1e-2,1e-1,1])
 
-
+#Get the test and train data sets
+train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size = 0.1)
 
 #Call the SVM function and plot accuracy and magnitudes
 accu_all = []
@@ -113,21 +110,38 @@ for reg in lambda_vals:
 
 #Making accuracy and magnitude plots
 plt.figure(1)
-line1, = plt.plot(steps, accu_all[0], label='1e-3')
-line2, = plt.plot(steps, accu_all[1], label='1e-2')
-line3, = plt.plot(steps, accu_all[2], label='1e-1')
-line4, = plt.plot(steps, accu_all[3],label='1')
-plt.legend(handles=[line1, line2, line3, line4])
-plt.title("Accuracy vs. Steps")
+line1, = plt.plot(steps, accu_all[0], label='$\lambda$=1e-3')
+line2, = plt.plot(steps, accu_all[1], label='$\lambda$=1e-2')
+line3, = plt.plot(steps, accu_all[2], label='$\lambda$=1e-1')
+line4, = plt.plot(steps, accu_all[3],label='$\lambda$=1')
+plt.ylim([0, 1])
+plt.xlim([0, 530])
+plt.legend(handles=[line1, line2, line3, line4],loc = 4)
+plt.title("Accuracy vs. Steps", fontsize=14)
+#plt.show()
 
 plt.figure(2)
-line5, = plt.plot(steps, mag_all[0], label='1e-3')
-line6, = plt.plot(steps, mag_all[1], label='1e-2')
-line7, = plt.plot(steps, mag_all[2], label='1e-1')
-line8, = plt.plot(steps, mag_all[3],label='1')
+line5, = plt.plot(steps, mag_all[0], label='$\lambda$=1e-3')
+line6, = plt.plot(steps, mag_all[1], label='$\lambda$=1e-2')
+line7, = plt.plot(steps, mag_all[2], label='$\lambda$=1e-1')
+line8, = plt.plot(steps, mag_all[3],label='$\lambda$=1')
+#plt.ylim([0, 1])
+plt.xlim([0, 530])
 plt.legend(handles=[line1, line2, line3, line4])
-plt.title("Magnitude vs. Steps")
+plt.title("Magnitude vs. Steps", fontsize=14)
+plt.show()
 
+
+#Train the model for data submission
+m = 1
+n = 50
+a, b, best_accu, mag = SVM(features, labels, 0.0025)
+plt.figure(3)
+line8, = plt.plot(steps, best_accu, label='$\lambda$=0.002')
+plt.ylim([0, 1])
+plt.xlim([0,530])
+plt.legend(handles=[line8])
+plt.title("Best estimate of regularization constant")
 
 
 

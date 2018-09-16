@@ -78,6 +78,7 @@ def SVM(train_features, train_labels, lam):
 
         #Create a mask to choose batches for each epoch
         msk = np.array(range(0,len(train_labels)))
+        np.random.seed(seed = 711)
         np.random.shuffle(msk)
 
         held_features = np.array(train_features[msk[-50:]])
@@ -96,6 +97,8 @@ def SVM(train_features, train_labels, lam):
                 accu_array.append(get_accu(a, b, held_features, held_labels, 50))
                 mag_array.append(a.T.dot(a)[0,0])
     return (a, b, accu_array, mag_array)
+
+
 
 
 #Call the SVM function and plot accuracy and magnitudes
@@ -125,6 +128,7 @@ line7, = plt.plot(steps, mag_all[2], label='1e-1')
 line8, = plt.plot(steps, mag_all[3],label='1')
 plt.legend(handles=[line1, line2, line3, line4])
 plt.title("Magnitude vs. Steps")
+
 
 
 

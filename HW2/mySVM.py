@@ -35,16 +35,13 @@ for col in range(features.shape[1]):
 #Get the test and train data sets
 train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size = 0.1)
 
-#An array of regulation variables
-lamda_vals = np.array([1e-3,1e-2,1e-1,1])
-
 #Define constants for calculating stepsize = a / (epoch + b)
 m = 1
 n = 50
 
 #Number of steps per season and regularization constants
 N_steps = 300
-lam = np.array([1e-3, 0.002, 0.0025, 1e-2, 1e-1, 1])
+lambda_vals = np.array([1e-3,0.002, 0.003, 1e-2,1e-1,1])
 
 #This function calculates gradient and updates the values of a and b
 #returns a tuple of a vector and b value
@@ -102,9 +99,32 @@ def SVM(train_features, train_labels, lam):
 
 
 #Call the SVM function and plot accuracy and magnitudes
-#for reg in lam:
-a, b, accu, mag = SVM(train_features, train_labels, lam[3])
-ans = get_accu(a, b, test_features, test_labels, len(test_labels))
+accu_all = []
+mag_all = []
+steps = np.arange(500)
+
+for reg in lambda_vals:
+    a, b, accu, mag = SVM(train_features, train_labels, reg)
+    accu_all.append(accu)
+    mag_all.append(mag)
+
+
+#Making accuracy and magnitude plots
+plt.figure(1)
+line1, = plt.plot(steps, accu_all[0], label='1e-3')
+line2, = plt.plot(steps, accu_all[1], label='1e-2')
+line3, = plt.plot(steps, accu_all[2], label='1e-1')
+line4, = plt.plot(steps, accu_all[3],label='1')
+plt.legend(handles=[line1, line2, line3, line4])
+plt.title("Accuracy vs. Steps")
+
+plt.figure(2)
+line5, = plt.plot(steps, mag_all[0], label='1e-3')
+line6, = plt.plot(steps, mag_all[1], label='1e-2')
+line7, = plt.plot(steps, mag_all[2], label='1e-1')
+line8, = plt.plot(steps, mag_all[3],label='1')
+plt.legend(handles=[line1, line2, line3, line4])
+plt.title("Magnitude vs. Steps")
 
 
 

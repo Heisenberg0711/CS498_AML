@@ -67,7 +67,7 @@ def get_accu(a, b, val_features, val_labels, size):
 def SVM(train_features, train_labels, lam):
     a = np.random.random([6, 1])
     b = np.random.random()
-
+    np.random.seed(seed = 711)
     #Empty accuracy array and magnitude array
     accu_array = []
     mag_array = []
@@ -78,7 +78,6 @@ def SVM(train_features, train_labels, lam):
 
         #Create a mask to choose batches for each epoch
         msk = np.array(range(0,len(train_labels)))
-        np.random.seed(seed = 711)
         np.random.shuffle(msk)
 
         held_features = np.array(train_features[msk[-50:]])

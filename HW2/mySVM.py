@@ -92,13 +92,14 @@ m = 1
 n = 50
 #Number of steps per season and regularization constants
 N_steps = 300
-lambda_vals = np.array([1e-3,1e-2,1e-1,1])
+lambda_vals = np.array([1e-3,0.0015,0.002,0.0025,0.003,1e-2,1e-1,1])
 
 #Get the test and train data sets
 train_features, test_features, train_labels, test_labels = train_test_split(features, labels, test_size = 0.1)
 
 #Call the SVM function and plot accuracy and magnitudes
 accu_all = []
+avg_accu = []
 mag_all = []
 steps = np.arange(500)
 
@@ -106,6 +107,11 @@ for reg in lambda_vals:
     a, b, accu, mag = SVM(train_features, train_labels, reg)
     accu_all.append(accu)
     mag_all.append(mag)
+
+for accu in accu_all:
+    avg_accu.append(sum(accu)/len(accu))
+
+print(avg_accu)
 
 
 #Making accuracy and magnitude plots
@@ -135,7 +141,7 @@ plt.show()
 #Train the model for data submission
 m = 1
 n = 50
-a, b, best_accu, mag = SVM(features, labels, 0.0025)
+a, b, best_accu, mag = SVM(features, labels, 0.002)
 plt.figure(3)
 line8, = plt.plot(steps, best_accu, label='$\lambda$=0.002')
 plt.ylim([0, 1])

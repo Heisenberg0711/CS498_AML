@@ -57,3 +57,4 @@ reform = pca.inverse_transform(pc) + avg_2
 dict = {'X1': reform[:,0], 'X2':reform[:,1], 'X3':reform[:,2], 'X4':reform[:,3]}
 df = pd.DataFrame(data=dict)
 df.to_csv("hqiu9-recon.csv")
+asdfasdf

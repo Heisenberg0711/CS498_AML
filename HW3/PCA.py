@@ -37,6 +37,7 @@ def comp_err(A, B):
     return error / A.shape[0]
 
 data_list =[data_1, data_2, data_3, data_4, data_5]
+avg_list = [avg_1, avg_2, avg_3, avg_4, avg_5]
 err_matrix = np.zeros([5,5])
 
 
@@ -44,5 +45,15 @@ for data in range(5):
     for i in range(5):
         pca = PCA(n_components = i, copy=True, whiten=False, svd_solver='full', iterated_power='auto')
         pc = pca.fit_transform(data_list[data])
-        reform = pca.inverse_transform(pc) + avg_1
+        reform = pca.inverse_transform(pc) + avg_list[data]
         err_matrix[data, i] = comp_err(reform, iris)
+
+
+
+#reconstruction of dataset Ii with 2 PCs
+pca = PCA(n_components = 2, copy=True, whiten=False, svd_solver='full', iterated_power='auto')
+pc = pca.fit_transform(data_2)
+reform = pca.inverse_transform(pc) + avg_2
+dict = {'X1': reform[:,0], 'X2':reform[:,1], 'X3':reform[:,2], 'X4':reform[:,3]}
+df = pd.DataFrame(data=dict)
+df.to_csv("hqiu9-recon.csv")

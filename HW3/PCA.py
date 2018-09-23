@@ -29,6 +29,7 @@ iris = iris.values
 
 
 from scipy.spatial.distance import sqeuclidean
+from sklearn.metrics import mean_squared_error
 #This function calculates
 def comp_err(A, B):
     error = 0.0
@@ -68,4 +69,4 @@ df.to_csv("hqiu9-recon.csv", index=False)
 dict2 = {'0N':err_matrix[:,0], '1N':err_matrix[:,1], '2N': err_matrix[:,2], '3N': err_matrix[:,3], '4N': err_matrix[:,4],
 '0c': err_matrix[:,0], '1c':err_matrix[:,1], '2c':err_matrix[:,2], '3c':err_matrix[:,3], '4c':err_matrix[:,4]}
 df2 = pd.DataFrame(data=dict2)
-df2.to_csv("hqiu9-numbers.csv", index=False)
+df2.to_csv("hqiu9-numbers.csv", index=False, header=False)

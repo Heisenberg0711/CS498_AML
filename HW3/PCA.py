@@ -62,11 +62,11 @@ pc = pca.fit_transform(data_2)
 reform = pca.inverse_transform(pc) + avg_2
 dict = {'X1': reform[:,0], 'X2':reform[:,1], 'X3':reform[:,2], 'X4':reform[:,3]}
 df = pd.DataFrame(data=dict)
-df.to_csv("hqiu9-recon.csv", index=False)
+df.to_csv("recon.csv", index=False)
 
 
 #Create csv for the error chart
 dict2 = {'0N':err_matrix[:,0], '1N':err_matrix[:,1], '2N': err_matrix[:,2], '3N': err_matrix[:,3], '4N': err_matrix[:,4],
 '0c': err_matrix[:,0], '1c':err_matrix[:,1], '2c':err_matrix[:,2], '3c':err_matrix[:,3], '4c':err_matrix[:,4]}
 df2 = pd.DataFrame(data=dict2)
-df2.to_csv("hqiu9-numbers.csv", index=False, header=False)
+df2.to_csv("numbers.csv", index=False, header=False)

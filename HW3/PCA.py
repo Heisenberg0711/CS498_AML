@@ -29,7 +29,6 @@ iris = iris.values
 
 
 from scipy.spatial.distance import sqeuclidean
-from sklearn.metrics import mean_squared_error
 #This function calculates
 def comp_err(A, B):
     error = 0.0

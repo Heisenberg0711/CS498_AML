@@ -29,7 +29,7 @@ iris = iris.values
 
 
 from scipy.spatial.distance import sqeuclidean
-#This function calculates
+#This function calculates mse
 def comp_err(A, B):
     error = 0.0
     for elemA, elemB in zip(A,B):

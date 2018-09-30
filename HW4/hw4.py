@@ -10,7 +10,7 @@ def unpickle(file):
         dict = pickle.load(fo, encoding='bytes')
     return dict
 
-#Problem 7.7 (b)
+#Problem 7.7 (a)
 #This function calculates MSE
 from scipy.spatial.distance import sqeuclidean
 def comp_err(A, B):
@@ -47,7 +47,7 @@ for batch in range(4):
     img_original[batch] = img_org
 
 
-for batch in range(4):
+for batch in range(1):
     for n in range(10):
         pca = PCA(n_components = 20, copy=True, whiten=False, svd_solver='full', iterated_power='auto')
         pc = pca.fit_transform(img_center[batch][n])
@@ -55,4 +55,18 @@ for batch in range(4):
         err_matrix[batch, n] = comp_err(reform, img_original[batch][n])
         print(err_matrix)
 
-plt.plot(range(0,10), err_matrix[0])
+plt.bar(range(0,10), err_matrix[0])
+plt.title('MSE of categories 0 to 9')
+plt.xlabel('Categories')
+plt.ylabel('Mean Squared Error')
+
+
+
+#Problem 7.7(b)
+from sklearn.manifold import MDS
+from sklearn.metrics.pairwise import euclidean_distances
+pcoa = MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed,
+           dissimilarity="precomputed", n_jobs=1)
+distances = euclidean_distances(img_avg[0])
+pos = pcoa.fit(distances).embedding_
+plt.scatter(pos[:,0], pos[:1], color='turquoise', s=s, lw=0, label='pcoa')

@@ -19,10 +19,10 @@ def comp_err(A, B):
 
 meta_data = unpickle("cifar-10-batches-py/batches.meta")
 origin_train_data = [unpickle("cifar-10-batches-py/data_batch_1"),
-              unpickle("cifar-10-batches-py/data_batch_2"),
-              unpickle("cifar-10-batches-py/data_batch_3"),
-              unpickle("cifar-10-batches-py/data_batch_4"),
-              unpickle("cifar-10-batches-py/data_batch_5")]
+                     unpickle("cifar-10-batches-py/data_batch_2"),
+                     unpickle("cifar-10-batches-py/data_batch_3"),
+                     unpickle("cifar-10-batches-py/data_batch_4"),
+                     unpickle("cifar-10-batches-py/data_batch_5")]
 origin_test_data = unpickle("cifar-10-batches-py/test_batch")
 
 #Get the average image of all category of all batches and store them in dictionary.
@@ -62,15 +62,15 @@ plt.show()
 from sklearn.manifold import MDS
 from sklearn.metrics.pairwise import euclidean_distances
 #Set the random seed to control the MDS function
-seed = np.random.RandomState(seed=5)
+seed = np.random.RandomState(seed=3)
 pcoa = MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed,
            dissimilarity="precomputed", n_jobs=1)
 
 distances = euclidean_distances(img_avg)
 pos = pcoa.fit(distances).embedding_
 
+plt.figure(figsize=(8,6))
 plt.scatter(pos[:,0], pos[:,1], color='turquoise')
-plt.title('2D Map Plot of All Categories of Images')
+plt.title('2D Map Plot of All Categories of Images', fontsize = 15)
 for i in range(10):
     plt.annotate(LabelNames[i], pos[i,:])
-plt.show()

@@ -18,40 +18,51 @@ def comp_err(A, B):
         error += sqeuclidean(elemA, elemB)
     return error / A.shape[0]
 
-d1 = unpickle("cifar-10-batches-py/data_batch_1")
-d2 = unpickle("cifar-10-batches-py/data_batch_2")
-d3 = unpickle("cifar-10-batches-py/data_batch_3")
-d4 = unpickle("cifar-10-batches-py/data_batch_4")
-d5 = unpickle("cifar-10-batches-py/data_batch_5")
+meta_data = unpickle("cifar-10-batches-py/batches.meta")
+origin_train_data = [unpickle("cifar-10-batches-py/data_batch_1"),
+              unpickle("cifar-10-batches-py/data_batch_2"),
+              unpickle("cifar-10-batches-py/data_batch_3"),
+              unpickle("cifar-10-batches-py/data_batch_4"),
+              unpickle("cifar-10-batches-py/data_batch_5")]
+origin_test_data = unpickle("cifar-10-batches-py/test_batch")
 
 #Get the average image of all category of all batches and store them in dictionary.
-data_batch = [d1,d2,d3,d4,d5]
-img_center = dict.fromkeys([0, 1, 2, 3, 4])
-img_avg = dict.fromkeys([0, 1, 2, 3, 4])
-img_original = dict.fromkeys([0, 1, 2, 3, 4])
-err_matrix = np.zeros([5,10])
+train_data = np.array([x[b'data'] for x in origin_train_data]).reshape(50000, 3072)
+train_label = np.array([x[b'labels'] for x in origin_train_data]).reshape(50000)
+test_data = origin_test_data[b'data']   #Test data has shape of (10000,3072)
+test_label = np.array(origin_test_data[b'labels'])
 
-for batch in range(5):
-    imgs_c = {}
-    imgs_mean = {}
-    img_org = {}
-    for n in range(10):
-        keys = np.asarray(data_batch[batch][b'labels'])
-        labels = np.where(keys == n)
-        img_org[n] = data_batch[batch][b'data'][labels]
-        imgs_c[n] = data_batch[batch][b'data'][labels] - np.mean(data_batch[batch][b'data'][labels], axis=0)
-        imgs_mean[n] = np.mean(data_batch[batch][b'data'][labels], axis=0)
-    img_center[batch] = imgs_c
-    img_avg[batch] = imgs_mean
-    img_original[batch] = img_org
+#Sift images based on label and calculate the average of images (for part b)
+img_avg = np.array([np.mean(train_data[train_label == label,], axis=0) for label in range(10)])
+#Get names for each numerical category from the meta data
+LabelNames = np.array([str(name,encoding='utf-8') for name in meta_data[b'label_names']])
+err_matrix = np.zeros([1,10])
+#This matrix is used to store the representations of 10 categories
+Principles = np.zeros([10,20,3027])
 
 
-for batch in range(5):
-    for n in range(10):
-        pca = PCA(n_components = 20, copy=True, whiten=False, svd_solver='full', iterated_power='auto')
-        pc = pca.fit_transform(img_center[batch][n])
-        reform = pca.inverse_transform(pc) + img_avg[batch][n]
-        err_matrix[batch, n] = comp_err(reform, img_original[batch][n])
+
+# for batch in range(5):
+#     imgs_c = {}
+#     imgs_mean = {}
+#     img_org = {}
+#     for n in range(10):
+#         keys = np.asarray(data_batch[batch][b'labels'])
+#         labels = np.where(keys == n)
+#         img_org[n] = data_batch[batch][b'data'][labels]
+#         imgs_c[n] = data_batch[batch][b'data'][labels] - np.mean(data_batch[batch][b'data'][labels], axis=0)
+#         imgs_mean[n] = np.mean(data_batch[batch][b'data'][labels], axis=0)
+#     img_center[batch] = imgs_c
+#     img_avg[batch] = imgs_mean
+#     img_original[batch] = img_org
+
+#Calculate MSE of each category of images
+for category in range(10):
+    pca = PCA(n_components = 20, copy=True, whiten=False, svd_solver='full', iterated_power='auto')
+    pc = pca.fit_transform(train_data[train_label == category])
+    reform = pca.inverse_transform(pc)
+    err_matrix[category] = comp_err(reform, train_data[train_label == category])
+    Principles[category] = pca.components_
 
 plt.bar(range(0,10), err_matrix[0])
 plt.title('MSE of categories 0 to 9')

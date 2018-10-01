@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
@@ -36,38 +35,25 @@ test_label = np.array(origin_test_data[b'labels'])
 img_avg = np.array([np.mean(train_data[train_label == label,], axis=0) for label in range(10)])
 #Get names for each numerical category from the meta data
 LabelNames = np.array([str(name,encoding='utf-8') for name in meta_data[b'label_names']])
-err_matrix = np.zeros([1,10])
+err_matrix = np.zeros(10)
 #This matrix is used to store the representations of 10 categories
-Principles = np.zeros([10,20,3027])
+Principles = np.zeros([10,20,3072])
 
-
-
-# for batch in range(5):
-#     imgs_c = {}
-#     imgs_mean = {}
-#     img_org = {}
-#     for n in range(10):
-#         keys = np.asarray(data_batch[batch][b'labels'])
-#         labels = np.where(keys == n)
-#         img_org[n] = data_batch[batch][b'data'][labels]
-#         imgs_c[n] = data_batch[batch][b'data'][labels] - np.mean(data_batch[batch][b'data'][labels], axis=0)
-#         imgs_mean[n] = np.mean(data_batch[batch][b'data'][labels], axis=0)
-#     img_center[batch] = imgs_c
-#     img_avg[batch] = imgs_mean
-#     img_original[batch] = img_org
 
 #Calculate MSE of each category of images
-for category in range(10):
+for cat in range(10):
     pca = PCA(n_components = 20, copy=True, whiten=False, svd_solver='full', iterated_power='auto')
-    pc = pca.fit_transform(train_data[train_label == category])
+    pc = pca.fit_transform(train_data[train_label == cat,:])
     reform = pca.inverse_transform(pc)
-    err_matrix[category] = comp_err(reform, train_data[train_label == category])
-    Principles[category] = pca.components_
+    err_matrix[cat] = comp_err(reform, train_data[train_label == cat,:])
+    Principles[cat] = pca.components_
 
-plt.bar(range(0,10), err_matrix[0])
-plt.title('MSE of categories 0 to 9')
+plt.figure(1,[10, 5])
+plt.bar(range(0,10), err_matrix, align = 'center', alpha = 0.9)
+plt.title('MSE of categories 0 to 9', fontsize = 15)
 plt.xlabel('Categories')
 plt.ylabel('Mean Squared Error')
+plt.xticks(range(10),LabelNames)
 plt.show()
 
 
@@ -75,18 +61,16 @@ plt.show()
 #Problem 7.7(b)
 from sklearn.manifold import MDS
 from sklearn.metrics.pairwise import euclidean_distances
+#Set the random seed to control the MDS function
 seed = np.random.RandomState(seed=5)
 pcoa = MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed,
            dissimilarity="precomputed", n_jobs=1)
 
-a = img_avg[1][0]
-for idx in range(1,10):
-    b = img_avg[1][idx]
-    a = np.concatenate((a,b), axis=0)
-a = a.reshape(10,3072)
-print(a.shape)
-
-distances = euclidean_distances(a)
+distances = euclidean_distances(img_avg)
 pos = pcoa.fit(distances).embedding_
-plt.scatter(pos[:,0], pos[:,1], color='turquoise', lw=0, label='pcoa')
+
+plt.scatter(pos[:,0], pos[:,1], color='turquoise')
+plt.title('2D Map Plot of All Categories of Images')
+for i in range(10):
+    plt.annotate(LabelNames[i], pos[i,:])
 plt.show()

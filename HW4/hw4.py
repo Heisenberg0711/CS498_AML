@@ -65,7 +65,8 @@ from sklearn.metrics.pairwise import euclidean_distances
 seed = np.random.RandomState(seed=3)
 pcoa = MDS(n_components=2, max_iter=3000, eps=1e-9, random_state=seed,
            dissimilarity="precomputed", n_jobs=1)
-
+           
+#This function will create distance matrix for all distances between mean images.
 distances = euclidean_distances(img_avg)
 pos = pcoa.fit(distances).embedding_
 

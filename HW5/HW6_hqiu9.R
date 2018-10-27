@@ -13,7 +13,9 @@ plot(housingLM1, id.n = 10)
 #Part B
 #Remove the outliers from the DataFrame and produce new plots
 housing_rm <- housing[-c(369, 371, 372, 373, 365, 370, 413),]
-housingLM2 <- lm(housing_rm$V14 ~ housing_rm$V1 + housing_rm$V2 + housing_rm$V3 + housing_rm$V4 + housing_rm$V5 + housing_rm$V6 + housing_rm$V7 + housing_rm$V8 + housing_rm$V9 + housing_rm$V10 + housing_rm$V11 + housing_rm$V12 + housing_rm$V13)
+housingLM2 <- lm(housing_rm$V14 ~ housing_rm$V1 + housing_rm$V2 + housing_rm$V3 + housing_rm$V4 + 
+                 housing_rm$V5 + housing_rm$V6 + housing_rm$V7 + housing_rm$V8 + housing_rm$V9 + 
+                   housing_rm$V10 + housing_rm$V11 + housing_rm$V12 + housing_rm$V13)
 plot(housingLM2, id.n = 2)
 
 
